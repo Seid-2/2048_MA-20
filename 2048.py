@@ -1,4 +1,5 @@
-
+from cgitb import reset
+from itertools import count
 from tkinter import *
 from tkinter import messagebox
 import random
@@ -65,8 +66,72 @@ numbers = [
  [0, 0, 0, 0],
  [0, 0, 0, 0],
 ]
-positions = random.sample([(x, y) for x in range(len(numbers)) for y in range(len(numbers))], 2) # Affichage aléatoire sur la grille (avec ChatGPT)
-for x, y in positions: numbers[x][y] = 2 # Placer un 2 sur la grille
+
+def is_win():
+    if won is True:
+        return False
+    for line in range(len(numbers)):
+        for col in range(len(numbers[line])):
+            if numbers[line][col]==2048:
+                return True
+    return False
+
+def is_game_full() :
+    for line in range(len(numbers)):
+        for col in range(len(numbers[line])):
+            if numbers[line][col] ==0:
+                return False
+    return True
+
+def count_mergeable():
+    count=0
+    for line in range(len(numbers)):
+        for col in range(len(numbers[line]) - 1):
+            if numbers[line][col] == numbers[line][col + 1]:
+                count += 1
+    for col in range(len(numbers[0])):
+        for line in range(len(numbers) - 1):
+            if numbers[line][col] == numbers[line + 1][col]:
+                count +=1
+    return count
+
+
+
+def ajouter_tuile():
+    positions = random.choice([(x, y) for x in range(len(numbers)) for y in range(len(numbers))]) # Affichage aléatoire sur la grille (avec ChatGPT)
+    x = positions[0]
+    y = positions[1]
+
+
+
+    while numbers[x][y]>0:
+
+        positions = random.choice([(x, y) for x in range(len(numbers)) for y in range(len(numbers))])  # Affichage aléatoire sur la grille (avec ChatGPT)
+        x = positions[0]
+        y = positions[1]
+
+    value = random.randint(0, 100)
+    if value <= 80 :
+        numbers[x][y] = 2  # Placer un 2 sur la grille
+    else:
+        numbers[x][y] = 4  # Placer un 2 sur la grille
+
+def reset():
+    global won,numbers
+    won = False
+    numbers = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+    ]
+    ajouter_tuile()
+    ajouter_tuile()
+    display_game()
+
+
+ajouter_tuile()
+ajouter_tuile()
 
 # 2 dimensions list (empty, with labels in the future)
 labels = [
@@ -90,6 +155,7 @@ colours = {
     1024: "#FEEF81",
     2048: "#FEEF4D",
 }
+won = False
 
 x0 = 200 # horizontal beginning of labels
 y0 = 100 # vertical beginning of labels
@@ -100,6 +166,8 @@ win = Tk()
 win.geometry("1000x1000")
 win.title(" exemple labels positionnés par .place")
 # Title
+btn_reset = Button(win,text="Reset",command=reset)
+btn_reset.place(x=500, y=40,width=300, height=50)
 Label(text="2048", width=10, height=1, font=("Arial", 60)).place(x=50, y=8)
 # labels creation and position (1. Creation 2. position)
 for line in range(len(numbers)):
@@ -120,24 +188,38 @@ def display_game():#Chat gpt je lui est demandé trouve moi le code
             # Affectation des touches aux fonctions, q pour quitter, le reste pour "tasser" dans une certaine direction
 
 def key_pressed(event):
+    global won
     key = event.keysym  # récupérer le symbole de la touche
 
+    moves = 0
     #code qui permet de faire les mouvement gauche, droite, haut, bas avec les touches w,a,s,d
     if key == "Right" or key == "d" or key == "D":
         for line in range(len(numbers)):
-            numbers[line][3], numbers[line][2], numbers[line][1], numbers[line][0], moves = pack4(numbers[line][3],numbers[line][2],numbers[line][1],numbers[line][0])
+            numbers[line][3], numbers[line][2], numbers[line][1], numbers[line][0], move = pack4(numbers[line][3],numbers[line][2],numbers[line][1],numbers[line][0])
+            moves = moves + move
     if key == "Left" or key == "a" or key == "A":
         for line in range(len(numbers)):
-            numbers[line][0], numbers[line][1], numbers[line][2], numbers[line][3], moves = pack4(numbers[line][0],numbers[line][1],numbers[line][2],numbers[line][3])
+            numbers[line][0], numbers[line][1], numbers[line][2], numbers[line][3], move = pack4(numbers[line][0],numbers[line][1],numbers[line][2],numbers[line][3])
+            moves = moves + move
     if key == "Up" or key == "w" or key == "W":
         for col in range(len(numbers[0])):
-            numbers[0][col], numbers[1][col], numbers[2][col], numbers[3][col], moves = pack4(numbers[0][col], numbers[1][col], numbers[2][col], numbers[3][col])
-
+            numbers[0][col], numbers[1][col], numbers[2][col], numbers[3][col], move = pack4(numbers[0][col], numbers[1][col], numbers[2][col], numbers[3][col])
+            moves = moves + move
     if key == "Down" or key == "s" or key == "S":
         for col in range(len(numbers[0])):
-            numbers[3][col], numbers[2][col], numbers[1][col], numbers[0][col], moves = pack4(numbers[3][col], numbers[2][col], numbers[1][col], numbers[0][col])
+            numbers[3][col], numbers[2][col], numbers[1][col], numbers[0][col], move = pack4(numbers[3][col], numbers[2][col], numbers[1][col], numbers[0][col])
+            moves = moves + move
 
-    display_game()
+    if moves > 0:
+        ajouter_tuile()
+        display_game()
+        if is_win():
+            won=True
+            messagebox.showinfo("", "You win ")
+
+        if is_game_full() and count_mergeable() == 0:
+            messagebox.showinfo("", "You lose")
+
 # code qui permet de quitter le jeu
     if key == "Q" or key == "q":
         result = messagebox.askokcancel("Confirmation", "Voulez-vous vraiment quitter ?")

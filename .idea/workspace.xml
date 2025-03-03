@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="549b602f-1742-4d07-9c52-b74bb1c55a34" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/2046 aide.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/2048.py" beforeDir="false" afterPath="$PROJECT_DIR$/2048.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/maquette.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/maquette.drawio" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +36,7 @@
   "keyToString": {
     "Python.2046 aide.executor": "Run",
     "Python.2048.executor": "Run",
-    "Python.test_pack4_0.executor": "Run",
+    "Python.test_pack4_0.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "C:/Users/pm12hrx/PycharmProjects/Examen/2048_MA-20",
